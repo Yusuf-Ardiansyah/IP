@@ -1,7 +1,7 @@
 // ==============================================================================
 // MAIN V2RAY & PROXY IP CONFIGURATION (MULTIPLE IPS CAN BE COMMA SEPARATED)
 // ==============================================================================
-const envUUID = '94c33f53-415a-4eb7-b588-4230a45cf72f'; // <-- REPLACE YOUR UUID HERE
+const envUUID = '';
 let defaultProxyIP = 'proxyip.example.com, cdn.cloudflare.net, 104.16.20.165'; // <-- REPLACE PROXY IP HERE
 // ==============================================================================
 
@@ -37,7 +37,8 @@ export default {
 		const upgradeHeader = (request.headers.get('Upgrade') || '').toLowerCase(), contentType = (request.headers.get('content-type') || '').toLowerCase();
 		
 		const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
-		const userID = (envUUID && uuidRegex.test(envUUID)) ? envUUID.toLowerCase() : envUUID;
+		const activeUUID = env.UUID || envUUID;
+                const userID = (activeUUID && uuidRegex.test(activeUUID)) ? activeUUID.toLowerCase() : activeUUID;
 		
 		const hosts = env.HOST ? (await parseToArray(env.HOST)).map(h => h.toLowerCase().replace(/^https?:\/\//, '').split('/')[0].split(':')[0]) : [url.hostname];
 		const host = hosts[0];
@@ -114,7 +115,29 @@ export default {
 			}
 			return proxyResponse;
 		} catch (error) { }
-		return new Response("V2Ray Engine Running - IP Rotation Active", { status: 200, headers: { 'Content-Type': 'text/plain; charset=UTF-8' } });
+		const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y-ARDIANSYAH Gateway</title>
+    <style>
+        body { background-color: #004d40; color: #e0f2f1; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { border: 2px solid #80cbc4; padding: 40px; border-radius: 12px; background-color: rgba(0, 0, 0, 0.4); text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h1 { margin: 0 0 10px 0; font-size: 2em; letter-spacing: 2px; color: #a7ffeb; }
+        p { margin: 0; font-size: 1.2em; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>⚜️ Y-ARDIANSYAH ⚜️</h1>
+        <p>Secure Network Node is Active</p>
+    </div>
+</body>
+</html>
+`;
+return new Response(htmlContent, { status: 200, headers: { 'Content-Type': 'text/html; charset=UTF-8' } });
 	}
 };
 
