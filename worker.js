@@ -1,8 +1,8 @@
 // ==============================================================================
-// KONFIGURASI UTAMA V2RAY & PROXY IP (BISA MULTIPLE IP DIPISAH KOMA)
+// MAIN V2RAY & PROXY IP CONFIGURATION (MULTIPLE IPS CAN BE COMMA SEPARATED)
 // ==============================================================================
-const envUUID = '94c33f53-415a-4eb7-b588-4230a45cf72f'; // <-- GANTI UUID KAMU DI SINI
-let 默认反代IP = ''; // <-- GANTI PROXY IP DI SINI
+const envUUID = '94c33f53-415a-4eb7-b588-4230a45cf72f'; // <-- REPLACE YOUR UUID HERE
+let defaultProxyIP = 'proxyip.example.com, cdn.cloudflare.net, 104.16.20.165'; // <-- REPLACE PROXY IP HERE
 // ==============================================================================
 
 const Version = '2026-07-29 23:57:34';
