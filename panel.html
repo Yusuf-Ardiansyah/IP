@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Manajemen Proxy</title>
+    <style>
+        :root {
+            /* Palet warna Hijau Zamrud & Emas */
+            --primary: #065F46; 
+            --primary-hover: #047857;
+            --accent: #D4AF37; 
+            --bg: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text: #1F2937;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            /* Pola latar belakang geometris halus */
+            background-image: radial-gradient(var(--primary) 0.5px, transparent 0.5px), radial-gradient(var(--primary) 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            background-attachment: fixed;
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 700px;
+            overflow: hidden;
+            border-top: 5px solid var(--primary);
+        }
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        .content { padding: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--primary); font-size: 0.95rem; }
+        .help-text { font-size: 0.8rem; color: #6B7280; margin-top: -5px; margin-bottom: 8px; display: block; }
+        input[type="text"], input[type="password"], textarea {
+            width: 100%; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; box-sizing: border-box;
+            font-family: monospace; font-size: 1rem; transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); }
+        textarea { resize: vertical; min-height: 200px; white-space: pre; }
+        button {
+            background-color: var(--primary); color: white; border: none; padding: 12px 20px;
+            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.3s; width: 100%;
+        }
+        button:hover { background-color: var(--primary-hover); }
+        .btn-danger { background-color: #DC2626; margin-top: 30px; }
+        .btn-danger:hover { background-color: #B91C1C; }
+        
+        /* Tab Navigasi */
+        .tabs { display: flex; border-bottom: 2px solid #E5E7EB; margin-bottom: 25px; }
+        .tab { padding: 10px 20px; cursor: pointer; color: #6B7280; font-weight: bold; transition: 0.3s; }
+        .tab:hover { color: var(--primary); }
+        .tab.active { color: var(--primary); border-bottom: 3px solid var(--accent); margin-bottom: -2px; }
+        .panel { display: none; animation: fadeIn 0.4s; }
+        .panel.active { display: block; }
+        
+        /* Alert Notifikasi */
+        .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; display: none; font-weight: bold; text-align: center; }
+        .alert.success { background: #D1FAE5; color: #065F46; border: 1px solid #34D399; }
+        .alert.error { background: #FEE2E2; color: #B91C1C; border: 1px solid #F87171; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <div class="header">
+        <h1>Manajemen Proxy</h1>
+    </div>
+    <div class="content">
+        <div id="alertBox" class="alert"></div>
+
+        <!-- Halaman Login -->
+        <div id="loginSection">
+            <div class="form-group">
+                <label>Otentikasi Akses</label>
+                <span class="help-text">Masukkan password / UUID yang terdaftar di konfigurasi Workers.</span>
+                <input type="password" id="adminPassword" placeholder="••••••••••••••">
+            </div>
+            <button onclick="login()">Masuk ke Panel</button>
+        </div>
+
+        <!-- Halaman Dashboard (Tersembunyi sebelum login) -->
+        <div id="dashboardSection" style="display: none;">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('configTab')">⚙️ Konfigurasi</div>
+                <div class="tab" onclick="switchTab('ipTab')">🌐 Daftar Proxy IP</div>
+            </div>
+
+            <!-- Tab Konfigurasi Utama -->
+            <div id="configTab" class="panel active">
+                <div class="form-group">
+                    <label>Client UUID</label>
+                    <input type="text" id="configUUID" placeholder="Contoh: 12345678-1234-...">
+                </div>
+                <div class="form-group">
+                    <label>Domain Host</label>
+                    <input type="text" id="configHost" placeholder="Contoh: proxy.domain.com">
+                </div>
+                <button onclick="saveConfig()">Simpan Konfigurasi</button>
+            </div>
+
+            <!-- Tab Daftar IP (ADD.txt) -->
+            <div id="ipTab" class="panel">
+                <div class="form-group">
+                    <label>Routing IP Khusus</label>
+                    <span class="help-text">Satu entri per baris. Format: <code>IP:Port#NamaNegara</code> atau <code>Domain:Port#Nama</code></span>
+                    <textarea id="customIPs" placeholder="104.16.1.1:443#Singapore\nexample.com:2053#Jakarta"></textarea>
+                </div>
+                <button onclick="saveIPs()">Simpan Routing IP</button>
+            </div>
+            
+            <button class="btn-danger" onclick="logout()">Keluar (Logout)</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Menampilkan Notifikasi
+    function showAlert(msg, isSuccess) {
+        const alertBox = document.getElementById('alertBox');
+        alertBox.textContent = msg;
+        alertBox.className = 'alert ' + (isSuccess ? 'success' : 'error');
+        alertBox.style.display = 'block';
+        setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
+    }
+
+    // Pindah antar Tab
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // Proses Login ke Worker
+    async function login() {
+        const pass = document.getElementById('adminPassword').value;
+        if (!pass) return showAlert('Password tidak boleh kosong!', false);
+        
+        try {
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'password=' + encodeURIComponent(pass)
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                loadData();
+            } else {
+                showAlert('Password salah atau ditolak oleh server!', false);
+            }
+        } catch (e) {
+            // Worker akan mereturn 302 redirect ke /admin jika sukses
+            if(e.message.includes('Unexpected token') || e.message.includes('JSON')) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                loadData();
+            } else {
+                showAlert('Gagal terhubung ke server.', false);
+            }
+        }
+    }
+
+    // Mengambil data dari KV Workers
+    async function loadData() {
+        try {
+            // Ambil Config.json
+            const resConfig = await fetch('/admin/config.json');
+            if (resConfig.ok) {
+                const config = await resConfig.json();
+                document.getElementById('configUUID').value = config.UUID || '';
+                document.getElementById('configHost').value = config.HOST || '';
+            }
+
+            // Ambil daftar IP (ADD.txt)
+            const resIP = await fetch('/admin/ADD.txt');
+            if (resIP.ok) {
+                const ips = await resIP.text();
+                document.getElementById('customIPs').value = (ips && ips !== 'null') ? ips : '';
+            }
+        } catch (e) {
+            showAlert('Gagal memuat data dari KV. Coba muat ulang halaman.', false);
+        }
+    }
+
+    // Simpan Config JSON ke KV
+    async function saveConfig() {
+        const uuid = document.getElementById('configUUID').value;
+        const host = document.getElementById('configHost').value;
+        
+        try {
+            // Ambil struktur asli terlebih dahulu agar data lain tidak hilang
+            const resConfig = await fetch('/admin/config.json');
+            const config = await resConfig.json();
+            
+            // Timpa dengan data baru
+            config.UUID = uuid;
+            config.HOST = host;
+            if(!config.HOSTS) config.HOSTS = [host];
+
+            const res = await fetch('/admin/config.json', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config)
+            });
+            
+            if (res.ok) showAlert('Konfigurasi berhasil disimpan ke Cloudflare KV!', true);
+            else showAlert('Gagal menyimpan konfigurasi.', false);
+        } catch (e) {
+            showAlert('Terjadi kesalahan jaringan.', false);
+        }
+    }
+
+    // Simpan Daftar IP ke KV
+    async function saveIPs() {
+        const ips = document.getElementById('customIPs').value;
+        try {
+            const res = await fetch('/admin/ADD.txt', {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: ips
+            });
+            
+            if (res.ok) showAlert('Daftar Proxy IP berhasil disimpan!', true);
+            else showAlert('Gagal menyimpan daftar IP.', false);
+        } catch (e) {
+            showAlert('Terjadi kesalahan jaringan.', false);
+        }
+    }
+
+    function logout() {
+        window.location.href = '/logout';
+    }
+</script>
+</body>
+</html>
