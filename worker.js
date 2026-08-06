@@ -2,7 +2,7 @@
 // MAIN V2RAY & PROXY IP CONFIGURATION (MULTIPLE IPS CAN BE COMMA SEPARATED)
 // ==============================================================================
 const envUUID = '';
-let defaultProxyIP = 'cdn.cloudflare.net, 104.16.20.165, 172.67.73.39';
+let defaultProxyIP = '104.17.2.2, 104.18.3.3, 104.19.4.4, 104.21.6.6'; // <-- REPLACE PROXY IP HERE
 // ==============================================================================
 
 const Version = '2026-07-29 23:57:34';
@@ -115,7 +115,7 @@ export default {
 			}
 			return proxyResponse;
 		} catch (error) { }
-		const htmlContent = `
+const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -123,16 +123,95 @@ export default {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Y-ARDIANSYAH Gateway</title>
     <style>
-        body { background-color: #004d40; color: #e0f2f1; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { border: 2px solid #80cbc4; padding: 40px; border-radius: 12px; background-color: rgba(0, 0, 0, 0.4); text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        h1 { margin: 0 0 10px 0; font-size: 2em; letter-spacing: 2px; color: #a7ffeb; }
-        p { margin: 0; font-size: 1.2em; opacity: 0.8; }
+        body { 
+            background-color: #070707; 
+            color: #0fa; 
+            font-family: 'Courier New', Courier, monospace; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        /* Efek 3D Capsule Extreme */
+        .capsule-box { 
+            background: linear-gradient(145deg, #111, #222); 
+            padding: 50px 40px; 
+            border-radius: 80px; /* Bikin bentuknya kapsul */
+            text-align: center; 
+            width: 320px;
+            border: 2px solid rgba(0, 255, 170, 0.3);
+            box-shadow: 
+                25px 25px 50px #030303, 
+                -25px -25px 50px #151515,
+                inset 8px 8px 15px rgba(0, 255, 170, 0.1),
+                inset -8px -8px 15px rgba(0, 0, 0, 0.8);
+            transform: rotateX(5deg) rotateY(-5deg);
+            transition: all 0.5s ease;
+        }
+        .capsule-box:hover {
+            transform: rotateX(0deg) rotateY(0deg) scale(1.03);
+            border: 2px solid rgba(0, 255, 170, 0.8);
+            box-shadow: 
+                0 0 30px rgba(0, 255, 170, 0.2), 
+                inset 8px 8px 15px rgba(0, 255, 170, 0.2);
+        }
+        h1 { margin: 0 0 5px 0; font-size: 1.8em; letter-spacing: 3px; color: #a7ffeb; text-shadow: 0 0 10px #0fa; }
+        p { margin: 0 0 30px 0; font-size: 0.9em; opacity: 0.7; letter-spacing: 2px; }
+        
+        /* Form Login */
+        .input-group { margin-bottom: 20px; }
+        input {
+            width: 80%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid #0fa;
+            background: #000;
+            color: #0fa;
+            outline: none;
+            text-align: center;
+            letter-spacing: 2px;
+            box-shadow: inset 3px 3px 6px #000, inset -3px -3px 6px #111;
+            transition: 0.3s;
+        }
+        input::placeholder { color: #044; }
+        input:focus { box-shadow: 0 0 15px rgba(0, 255, 170, 0.5); }
+        
+        button {
+            background: #0fa;
+            color: #000;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #0fa;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #fff;
+            box-shadow: 0 0 25px #fff;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1>⚜️ Y-ARDIANSYAH ⚜️</h1>
-        <p>Secure Network Node is Active</p>
+    <div class="capsule-box">
+        <h1> Y-ARDIANSYAH </h1>
+        <p>SECURE SYSTEM NODE</p>
+        
+        <div class="input-group">
+            <input type="text" placeholder="ACCESS ID" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <input type="password" placeholder="PASSWORD">
+        </div>
+        
+        <button onclick="alert('⚠ ERROR 401: UNAUTHORIZED. \\nACCESS DENIED BY Y-ARDIANSYAH SECURE PROTOCOL.')">INITIALIZE</button>
     </div>
 </body>
 </html>
