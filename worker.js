@@ -2,7 +2,7 @@
 // MAIN V2RAY & PROXY IP CONFIGURATION (MULTIPLE IPS CAN BE COMMA SEPARATED)
 // ==============================================================================
 const envUUID = '';
-let defaultProxyIP = 'proxyip.example.com, cdn.cloudflare.net, 104.16.20.165'; // <-- REPLACE PROXY IP HERE
+let defaultProxyIP = 'cdn.cloudflare.net, 104.16.20.165, 172.67.73.39';
 // ==============================================================================
 
 const Version = '2026-07-29 23:57:34';
