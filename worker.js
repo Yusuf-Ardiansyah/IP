@@ -1,11 +1,13 @@
 // ==============================================================================
-// MAIN V2RAY & PROXY IP CONFIGURATION (MULTIPLE IPS CAN BE COMMA SEPARATED)
+// PROXY IP UNTUK WORKER (WAJIB NON-CLOUDFLARE AGAR BISA BUKA SEMUA WEB)
 // ==============================================================================
-const envUUID = '';
-// IP SUDAH AMAN ADA DI SINI SAYANG
-let defaultProxyIP = 'proxyip.fxxk.dedyn.io';
-// ==============================================================================
+const envUUID = ''; 
 
+// Gunakan domain proxy eksternal (Bisa digabung pakai koma agar diacak)
+let defaultProxyIP = 'proxyip.fxxk.dedyn.io, bpb.edgetunnel.anycast.me, proxyip.aliyun.fxxk.dedyn.io';
+
+let proxyIPsArray = defaultProxyIP.split(',').map(ip => ip.trim());
+let selectedProxyIP = proxyIPsArray[Math.floor(Math.random() * proxyIPsArray.length)];
 const Version = '2026-07-29 23:57:34';
 let cachedSocks5Whitelist = null, debugLogEnabled = false;
 let socks5Whitelist = ['*tapecontent.net', '*cloudatacdn.com', '*loadshare.org', '*cdn-centaurus.com', 'scholar.google.com'];
